@@ -7,7 +7,7 @@ add_executable(print_ip_cli print_ip.cpp)
 set_target_properties(print_ip_cli PROPERTIES
   CXX_STANDARD 14
   CXX_STANDARD_REQUIRED ON
-  COMPILE_OPTIONS -Wpedantic -Wall -Wextra
+  COMPILE_OPTIONS -Wpedantic -Wall -Wextra -fpermissive
 )
 
 install(TARGETS print_ip_cli RUNTIME DESTINATION bin)

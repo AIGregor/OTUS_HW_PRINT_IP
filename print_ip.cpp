@@ -163,6 +163,6 @@ int main() {
 	auto tplIp_v4 = std::make_tuple(192, 0, 0, 0, 0, 0, 1);
 	print_ip(tplIp_v4);
 
-	system("pause");
+	// system("pause");
 	return 0;
 }
