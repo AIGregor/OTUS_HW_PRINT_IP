@@ -17,51 +17,73 @@
 
 using namespace std;
 
-/// Специализация для всех целочисленных типов с переводом в vector
 template <typename T>
-void print_ip(T&& ip)
+struct print_ip_impl
 {
-	union {
-		T number;
-		uint8_t n8[sizeof(T)];
-	} T2Bytes;
-
-	T2Bytes.number = ip;
-
-	std::vector<uint8_t> ip_v;
-	for (char i = sizeof(T) - 1; i >= 0; --i)
+	static void print_ip(T& ip)
 	{
-		ip_v.push_back(T2Bytes.n8[i]);
+		union {
+			T number;
+			uint8_t n8[sizeof(T)];
+		} T2Bytes;
+
+		T2Bytes.number = ip;
+
+		std::vector<uint8_t> ip_v;
+		for (char i = sizeof(T) - 1; i >= 0; --i)
+		{
+			ip_v.push_back(T2Bytes.n8[i]);
+		}
+		// Печать
+		printIpString(ip_v);
 	}
-	// Печать
-	printIpString(ip_v);
-}
+};
 
-/// Печать строки
-void print_ip(std::string& ip)
+template<>
+struct print_ip_impl<std::string>
 {
-	// Печатаем как есть
-	std::cout << ip << endl;
-}
+	static void print_ip(std::string& ip)
+	{
+		std::cout << ip << endl; // Печатаем как есть
+	}
+};
 
-/// Специализация для списка
-template <typename T>
-void print_ip(std::list<T>& ip)
+template<typename T>
+struct print_ip_impl<std::vector<T>>
 {
-	// переводит все в vector 
-	std::vector<T> ip_v{ std::make_move_iterator(std::begin(ip)),
-						 std::make_move_iterator(std::end(ip)) };
-	// Печать
-	printIpString(ip_v);
-}
+	static void print_ip(std::vector<T>& ip)
+	{
+		printIpString(ip);
+	}
+};
 
-/// Специализация для вектора
-template <typename T>
-void print_ip(std::vector<T>& ip)
+template<typename T>
+struct print_ip_impl<std::list<T>>
 {
-	// Печать
-	printIpString(ip);
-}
+	static void print_ip(std::list<T>& ip)
+	{
+		// переводит все в vector 
+		std::vector<T> ip_v{ std::make_move_iterator(std::begin(ip)),
+			std::make_move_iterator(std::end(ip)) };
+		// Печать
+		printIpString(ip_v);
+	}
+};
+
+template<typename ...T>
+struct print_ip_impl<std::tuple<T...>>
+{
+	static void print_ip(std::tuple<T...>& ip)
+	{
+		printTuple(ip);
+	}
+};
+
+template<typename T>
+void print_ip(T ip)
+{
+	print_ip_impl<T>::print_ip(ip);
+};
 
 template<int index, typename Callback, typename... Args>
 struct iterate_tuple
@@ -118,13 +140,6 @@ void printTuple(Tuple&& tuple)
 	cout << endl;
 }
 
-// Специализация для картежа
-template <typename ...T>
-void print_ip(std::tuple<T...>& ip)
-{
-	// Печать
-	printTuple(ip);
-}
 
 // потом печатаем вектор
 template <typename T>
@@ -150,16 +165,16 @@ int main() {
 	print_ip(short(0));
 	print_ip(2130706433);
 	print_ip(8875824491850138409);
-	
+
 	std::string test{ "test string" };
 	print_ip(test);
-	
-	std::list<int> lIp_v4{255, 255, 225, 255};
+
+	std::list<int> lIp_v4{ 255, 255, 225, 255 };
 	print_ip(lIp_v4);
-	
+
 	std::vector<int> vIp_v4 = { 192, 168, 0, 41 };
 	print_ip(vIp_v4);
-	
+
 	auto tplIp_v4 = std::make_tuple(192, 0, 0, 0, 0, 0, 1);
 	print_ip(tplIp_v4);
 
