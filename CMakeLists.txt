@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(print_ip VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER)
+project(print_ip VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
 add_executable(print_ip_cli print_ip.cpp)
 
