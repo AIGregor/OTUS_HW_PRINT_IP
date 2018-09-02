@@ -19,7 +19,8 @@
 using namespace std;
 
 /// All inregral types
-template<typename T> typename std::enable_if_t<std::is_integral<T>::value, void>
+template<typename T> 
+	typename std::enable_if_t<std::is_integral<T>::value>
 	print_ip(const T& ip)
 	{
 		union {
