@@ -49,7 +49,7 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-  - curl -T print_ip-0.0.1-Linux.deb -uaigregor:$BINTRAY_API_KEY "https://api.bintray.com/content/aigregor/OTUS_HW_PRINT_IP/print_ip/$TRAVIS_BUILD_NUMBER/print_ip-0.0.1-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+  - curl -T print_ip-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -uaigregor:$BINTRAY_API_KEY "https://api.bintray.com/content/aigregor/OTUS_HW_PRINT_IP/print_ip/$TRAVIS_BUILD_NUMBER/print_ip-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
 
 # Generate and deploy documentation
 after_success:
