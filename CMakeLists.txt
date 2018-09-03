@@ -10,6 +10,8 @@ set_target_properties(print_ip_cli PROPERTIES
   COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 )
 
+set(CMAKE_CXX_FLAGS "-fpermissive")
+
 install(TARGETS print_ip_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
