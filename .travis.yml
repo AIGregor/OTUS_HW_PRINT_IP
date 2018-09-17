@@ -1,0 +1,58 @@
+language: cpp
+
+# This will run on Travis' 'new' container-based infrastructure
+sudo: false
+
+# Blacklist
+branches:
+  except:
+    - gh-pages
+
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+    
+# Environment variables
+env:
+  global:
+    - GH_REPO_NAME: OTUS_HW_PRINT_IP #<your_repo>
+    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile #<path_to_your_doxygen_configuration_file>
+    - GH_REPO_REF: github.com/AIGregor/OTUS_HW_PRINT_IP.git  #github.com/<your_name>/<your_repo>.git
+
+# Install dependencies
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
+      - doxygen-latex
+      - doxygen-gui
+      - graphviz
+
+script:
+  - cmake .
+  - cmake --build .
+  - cmake --build . --target package
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+  - curl -T print_ip-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -uaigregor:$BINTRAY_API_KEY "https://api.bintray.com/content/aigregor/OTUS_HW_PRINT_IP/print_ip/$TRAVIS_BUILD_NUMBER/print_ip-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+
+# Generate and deploy documentation
+after_success:
+  - cd $TRAVIS_BUILD_DIR
+  - chmod +x generateDocumentationAndDeploy.sh
+  - ./generateDocumentationAndDeploy.sh
